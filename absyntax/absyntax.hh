@@ -143,15 +143,15 @@ class symbol_c {
      * having more than one entry filled in!
      */
     typedef enum { cs_undefined,   /* not defined/not yet evaluated --> const_value is not valid! */
-                   cs_non_const,   /* we have deternmined that expression is not a const value --> const_value is not valid! */
+                   cs_non_const,   /* we have determined that expression is not a const value --> const_value is not valid! */
                    cs_const_value, /* const value is valid */
                    cs_overflow     /* result produced overflow or underflow --> const_value is not valid! */
                  } const_status_t;
  
-    typedef struct {const_status_t status;  real64_t  value; } const_value_real64_t;
-    typedef struct {const_status_t status;   int64_t  value; } const_value_int64_t;
-    typedef struct {const_status_t status;  uint64_t  value; } const_value_uint64_t;
-    typedef struct {const_status_t status;      bool  value; } const_value_bool_t;
+    typedef struct const_value_real64_s {const_status_t status;  real64_t  value;  const_value_real64_s (): status(cs_undefined), value(0.0)   {} } const_value_real64_t;
+    typedef struct const_value_int64_s  {const_status_t status;   int64_t  value;  const_value_int64_s  (): status(cs_undefined), value(0)     {} } const_value_int64_t;
+    typedef struct const_value_uint64_s {const_status_t status;  uint64_t  value;  const_value_uint64_s (): status(cs_undefined), value(0)     {} } const_value_uint64_t;
+    typedef struct const_value_bool_s   {const_status_t status;      bool  value;  const_value_bool_s   (): status(cs_undefined), value(false) {} } const_value_bool_t;
 
     typedef struct {
       const_value_real64_t _real64; /* status is initialised to UNDEFINED */
