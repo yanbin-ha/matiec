@@ -30,7 +30,7 @@
  *
  */
 
-/* Determine the data type of an constant expression.
+/* Determine the value of an constant expression.
  * A reference to the relevant type definition is returned.
  *
  * For example:
@@ -44,10 +44,15 @@
 
 
 
+/* For the moment we disable constant propagation algorithm as it is not yet complete, 
+ * and due to this is currently brocken and producing incorrect results!
+ */
+#define DO_CONSTANT_PROPAGATION__ 0
+
+
+
 class constant_folding_c : public iterator_visitor_c {
-  private:
     search_varfb_instance_type_c *search_varfb_instance_type;
-    search_base_type_c search_base_type;
     int error_count;
     bool warning_found;
     int current_display_error_level;
@@ -86,6 +91,20 @@ class constant_folding_c : public iterator_visitor_c {
     /* B 1.2.3.1 - Duration */
     /********* **************/
     void *visit(fixed_point_c *symbol);
+
+    /*********************/
+    /* B 1.4 - Variables */
+    /*********************/
+    #if DO_CONSTANT_PROPAGATION__
+    void *visit(symbolic_variable_c *symbol);
+    #endif
+
+    /**********************/
+    /* B 1.5.3 - Programs */
+    /**********************/
+    #if DO_CONSTANT_PROPAGATION__
+    void *visit(program_declaration_c *symbol);
+    #endif
 
     /****************************************/
     /* B.2 - Language IL (Instruction List) */
@@ -179,6 +198,25 @@ class constant_folding_c : public iterator_visitor_c {
     void *visit(   neg_expression_c *symbol);
     void *visit(   not_expression_c *symbol);
     //void *visit(function_invocation_c *symbol); /* TODO */
+
     
+    #if DO_CONSTANT_PROPAGATION__
+    /*********************************/
+    /* B 3.2.1 Assignment Statements */
+    /*********************************/
+    void *visit(assignment_statement_c *symbol);
+
+    /********************************/
+    /* B 3.2.3 Selection Statements */
+    /********************************/
+    void *visit(if_statement_c *symbol);
+
+    /********************************/
+    /* B 3.2.4 Iteration Statements */
+    /********************************/
+    void *visit(for_statement_c *symbol);
+    void *visit(while_statement_c *symbol);
+    void *visit(repeat_statement_c *symbol);
+    #endif // DO_CONSTANT_PROPAGATION__
 };
 
